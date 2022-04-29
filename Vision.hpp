@@ -11,6 +11,8 @@ struct Vision {
   bool verticals[Range + 1][Range];
 
   Vision();
+
+  size_t range() const;
 };
 
 template<size_t Range>
@@ -21,6 +23,11 @@ Vision<Range>::Vision() {
   for (int row = 0; row < Range + 1; row++)
     for (int col = 0; col < Range; col++)
       verticals[row][col] = false;
+}
+
+template<size_t Range>
+size_t Vision<Range>::range() const {
+  return Range;
 }
 
 #endif

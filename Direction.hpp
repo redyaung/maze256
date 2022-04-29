@@ -4,7 +4,7 @@
 #define NUM_DIRECTIONS 4
 
 enum class Direction {
-  Up, Down, Left, Right
+  Up = 0, Down = 1, Left = 2, Right = 3
 };
 
 extern Direction directions[NUM_DIRECTIONS];

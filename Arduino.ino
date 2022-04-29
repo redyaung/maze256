@@ -1,68 +1,132 @@
 #include <FastLED.h>
+#include <assert.h>
 
-//#include "Cell.hpp"
-//#include "Direction.hpp"
-//#include "Maze.hpp"
-//#include "MazeBuilder.hpp"
-//#include "Move.hpp"
-//#include "Queue.hpp"
-//#include "State.hpp"
-//#include "Vec.hpp"
-//#include "Wall.hpp"
-//#include "State.hpp"
-//#include "Vision.hpp"
+#include "State.hpp"
+#include "Direction.hpp"
 
 #define WIDTH 16
 #define HEIGHT 16
 #define NUM_LEDS WIDTH * HEIGHT
 #define LED_DATA_PIN 8
 
-CRGB leds[NUM_LEDS];
+#define TYPE_DELIMITER ':'
+#define TERMINATOR ']'
+#define INITIATOR '['
 
-//void setPixel(int row, int col, CRGB color) {
-//  int colBegin = col * HEIGHT;
-//  int offset = col % 2 == 0 ? row : HEIGHT - row - 1;
-//  int index = colBegin + offset;
-//  leds[index] = color;
-//}
-//
-//void setWideVision(Vision<5> vision) {
-//  // Render Horizontal Walls
-//  for (int row = 0; row < vision.horizontals.size(); row++) {
-//    for (int col = 0; col < vision.horizontals[row].size(); col++) {
-//      int pixelRow = row * 3, pixelCol = col * 3;
-//      CRGB color = vision.horizontals[row][col] ? CRGB::Navy : CRGB::White;
-//      for (int count = 0; count < 4; count++)
-//        setPixel(pixelRow, pixelCol + count, color);
-//    }
-//  }
-//  // Render Vertical Walls (Duplication)
-//  for (int row = 0; row < vision.verticals.size(); row++) {
-//    for (int col = 0; col < vision.verticals[row].size(); col++) {
-//      int pixelRow = row * 3, pixelCol = col * 3;
-//      CRGB color = vision.verticals[row][col] ? CRGB::Navy : CRGB::White;
-//      for (int count = 0; count < 4; count++)
-//        setPixel(pixelRow + count, pixelCol, color);
-//    }
-//  }
-//  // Fill the cells white
-//  for (int row = 0; row < 5; row++) {
-//    for (int col = 0; col < 5; col++) {
-//      int pixelRow = row * 3 + 1, pixelCol = col * 3 + 1;
-//      CRGB color = row == 2 && col == 2 ? CRGB::Red : CRGB::White;
-//      for (int rowOff = 0; rowOff < 2; rowOff++)
-//        for (int colOff = 0; colOff < 2; colOff++)
-//          setPixel(pixelRow + rowOff, pixelCol + colOff, color);
-//    }
-//  }
-//}
+enum class Difficulty {
+  Very_Easy = 0, Easy = 1, Normal = 2, Hard = 3
+};
+
+CRGB leds[NUM_LEDS];
+byte serialBuffer[SERIAL_BUFFER_CAPACITY];
+int serialBufferSize;
+State &state = State::getInstance();
+
+template<typename Enum>
+byte encode(Enum element) {
+  return static_cast<int>(element);
+}
+
+template<typename Enum>
+Enum decode(byte encoded) {
+  return static_cast<Enum>(encoded);
+}
+
+void handleNormalVision(byte *content, int size) {
+  assert(size == 24);
+  int index = 0;
+  for (int row = 0; row < 3; row++)
+    for (int col = 0; col < 4; col++, index++)
+      state.normalVision.horizontals[row][col] = content[index];
+  for (int row = 0; row < 4; row++)
+    for (int col = 0; col < 3; col++, index++)
+      state.normalVision.verticals[row][col] = content[index];
+}
+
+void handleWideVision(byte *content, int size) {
+  assert(size == 24);
+  int index = 0;
+  for (int row = 0; row < 5; row++)
+    for (int col = 0; col < 6; col++, index++)
+      state.wideVision.horizontals[row][col] = content[index];
+  for (int row = 0; row < 6; row++)
+    for (int col = 0; col < 5; col++, index++)
+      state.wideVision.verticals[row][col] = content[index];
+}
+
+void handleCompassDirection(byte *content, int size) {
+  content[size] = 0;
+  String floatStr = String(content);
+  state.compassDirection = floatStr.toFloat();
+}
+
+void handleAutopilot(byte *content, int size) {
+
+}
+
+void handleIsGameOver(byte *content, int size) {
+  assert(size == 1);
+  state.isGameOver = content[0];
+}
+
+void handleSerialBuffer() {
+  // serialBuffer contains "[<Type>:<Contents>" without the terminator.
+  int delimIndex;
+  for (
+    delimIndex = 0;
+    delimIndex < serialBufferSIZE && serialBuffer[delimIndex] != TYPE_DELIMITER;
+    delimIndex++
+  ) {}
+  serialBuffer[delimIndex] = 0;
+  String type = String(serialBuffer + 1);
+  byte *content = serialBuffer + delimIndex + 1;
+  int size = serialBufferSize - delimIndex - 1;
+  if (type == "NormalVision") {
+    handleNormalVision(content, size);
+  } else if (type == "WideVision") {
+    handleWideVision(content, size);
+  } else if (type == "Compass") {
+    handleCompassDirection(content, size);
+  } else if (type == "Autopilot") {
+    handleAutopilot(content, size);
+  } else if (type == "IsGameOver") {
+    handleIsGameOver(content, size);
+  }
+}
+
+void sendPlayerMove(Direction d) {
+  Serial.print("[Move:");
+  Serial.write(encode(d));
+  Serial.print("]");
+}
+
+void sendConfiguration(Difficulty diff) {
+  Serial.print("[Config:");
+  Serial.write(encode(diff));
+  Serial.print("]");
+}
+
+void sendAutopilotRequest() {
+  Serial.print("[AutopilotRequest:]");
+}
+
+void sendGiveUpRequest() {
+  Serial.print("[GiveUpRequest:]");
+}
 
 void setup() {
+  Serial.begin(9600);
   FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(leds, NUM_LEDS);
   FastLED.setBrightness(32);
   FastLED.show();
+
+  while (!Serial) {}
 }
 
 void loop() {
-
+  if (Serial.available()) {
+    serialBufferSize = Serial.readBytesUntil(TERMINATOR, serialBuffer, SERIAL_BUFFER_CAPACITY);
+    if (serialBufferSize > 0)
+      handleSerialBuffer();
+  }
 }
