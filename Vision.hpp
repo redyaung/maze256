@@ -5,16 +5,22 @@
 #include <cstddef>
 #endif
 
-#include "Vec.hpp"
-
 template<size_t Range>
 struct Vision {
-  Vec<Vec<bool, Range>, Range + 1> horizontals;
-  Vec<Vec<bool, Range + 1>, Range> verticals;
+  bool horizontals[Range][Range + 1];
+  bool verticals[Range + 1][Range];
 
-  Vision()
-    : horizontals(Range + 1, Vec<bool, Range>(Range, false)),
-      verticals(Range, Vec<bool, Range + 1>(Range + 1, false)) {}
+  Vision();
 };
+
+template<size_t Range>
+Vision<Range>::Vision() {
+  for (int row = 0; row < Range; row++)
+    for (int col = 0; col < Range + 1; col++)
+      horizontals[row][col] = false;
+  for (int row = 0; row < Range + 1; row++)
+    for (int col = 0; col < Range; col++)
+      verticals[row][col] = false;
+}
 
 #endif
