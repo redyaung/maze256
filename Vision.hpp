@@ -13,6 +13,7 @@ struct Vision {
   bool verticals[Range][Range + 1];
 
   Vision();
+  Vision& operator=(const Vision<Range> &other);
 
   size_t range() const;
 };
@@ -25,6 +26,16 @@ Vision<Range>::Vision() {
   for (int row = 0; row < Range; row++)
     for (int col = 0; col < Range + 1; col++)
       verticals[row][col] = false;
+}
+
+template<size_t Range>
+Vision<Range>& Vision<Range>::operator=(const Vision<Range> &other) {
+  for (int row = 0; row < Range + 1; row++)
+    for (int col = 0; col < Range; col++)
+      horizontals[row][col] = other.horizontals[row][col];
+  for (int row = 0; row < Range; row++)
+    for (int col = 0; col < Range + 1; col++)
+      verticals[row][col] = other.verticals[row][col];
 }
 
 template<size_t Range>
