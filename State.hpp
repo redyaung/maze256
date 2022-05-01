@@ -7,7 +7,7 @@ class State {
 public:
   Vision<3> normalVision;
   Vision<5> wideVision;
-  float compassDirection;
+  float compassDegree = 0.0;
   bool isGameOver = false;
 
   static State& getInstance();

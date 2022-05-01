@@ -1,5 +1,7 @@
 {
-    "board": "arduino:avr:uno",
+    "board": "arduino:avr:mega",
     "port": "/dev/tty.usbmodem14401",
-    "programmer": "arduino:arduinoisp"
+    "programmer": "arduino:arduinoisp",
+    "configuration": "cpu=atmega2560",
+    "sketch": "Arduino.ino"
 }
