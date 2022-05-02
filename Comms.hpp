@@ -10,7 +10,6 @@ namespace Comms {
     WideVisionH,
     WideVisionV,
     Compass,
-    Autopilot,
     IsGameOver,
     Invalid
   };

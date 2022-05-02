@@ -4,6 +4,7 @@
 #include "Comms.hpp"
 #include "Compass.hpp"
 #include "Direction.hpp"
+#include "Joystick.hpp"
 #include "Macros.hpp"
 #include "Processor.hpp"
 #include "Renderer.hpp"
@@ -14,6 +15,7 @@ CRGB leds[VISION_NUM_LEDS];
 LedControl compassDisplay(COMPASS_DIN, COMPASS_CLK, COMPASS_CS, 1);
 Renderer renderer(compassDisplay);
 State &state = State::getInstance();
+Joystick joystick(JOYSTICK_VRX, JOYSTICK_VRY, JOYSTICK_SW);
 
 // Function Declarations
 static void listen();
@@ -31,12 +33,21 @@ void setup() {
 void loop() {
   listen();
 
-  static unsigned long timeout = 0;
-  if (millis() > timeout) {
+  static unsigned long joystickTimeout = 0;
+  if (millis() > joystickTimeout) {
+    Direction move = joystick.readDirection();
+    if (move != Direction::None) {
+      Comms::sendMove(move);
+      joystickTimeout = millis() + 1000;
+    }
+  }
+
+  static unsigned long renderTimeout = 0;
+  if (millis() > renderTimeout) {
     renderer.renderWideVision(state.wideVision);
     renderer.renderCompass(state.compassDegree);
     FastLED.show();
-    timeout = millis() + 200;
+    renderTimeout = millis() + 200;
   }
 }
 

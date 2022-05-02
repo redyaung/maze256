@@ -11,7 +11,6 @@ namespace Processor {
   void processWideVisionHorizontals(byte *content, int size);
   void processWideVisionVerticals(byte *content, int size);
   void processCompass(byte *content, int size);
-  void processAutopilot(byte *content, int size);
   void processIsGameOver(byte *content, int size);
 };
 

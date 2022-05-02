@@ -20,9 +20,6 @@ void Processor::process(Comms::Type type, byte *content, int size) {
     case Comms::Type::Compass:
       processCompass(content, size);
       break;
-    case Comms::Type::Autopilot:
-      processAutopilot(content, size);
-      break;
     case Comms::Type::IsGameOver:
       processIsGameOver(content, size);
       break;
@@ -65,10 +62,6 @@ void Processor::processCompass(byte *content, int size) {
   state.compassDegree = floatStr.toFloat();
   __Debug("Setting compass direction to ");
   __Debugln(String(state.compassDegree, 3));
-}
-
-void Processor::processAutopilot(byte *content, int size) {
-
 }
 
 void Processor::processIsGameOver(byte *content, int size) {

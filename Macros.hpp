@@ -1,7 +1,7 @@
 #ifndef Macros_hpp
 #define Macros_hpp
 
-#define NDEBUG          // Un-define this macro when testing
+// #define NDEBUG          // Un-define this macro when testing
 
 #ifndef NDEBUG
   #define __Debug(a) Serial.print(a)
@@ -29,5 +29,10 @@
 #define COMPASS_CLK 24
 #define COMPASS_CS 22
 #define COMPASS_LED_INDEX 0
+
+// Joystick
+#define JOYSTICK_VRX A0
+#define JOYSTICK_VRY A1
+#define JOYSTICK_SW 46
 
 #endif

@@ -45,8 +45,6 @@ static Type toType(String type) {
     return Type::WideVisionV;
   } else if (type == "Compass") {
     return Type::Compass;
-  } else if (type == "Autopilot") {
-    return Type::Autopilot;
   } else if (type == "IsGameOver") {
     return Type::IsGameOver;
   } else {
@@ -103,6 +101,7 @@ Type Comms::process(byte *content, int &size) {
 }
 
 void Comms::sendMove(Direction d) {
+  assert(d != Direction::None);
   Serial.print("[Move:");
   Serial.write(encode(d));
   Serial.print("]");
