@@ -38,8 +38,8 @@ void loop() {
 
   static unsigned long renderTimeout = 0;
   if (millis() > renderTimeout) {
-    Controls::renderer.renderWideVision(State::wideVision);
-    Controls::renderer.renderCompass(State::compassDegree);
+    Renderer::renderWideVision(State::wideVision);
+    Renderer::renderCompass(State::compassDegree);
     FastLED.show();
     renderTimeout = millis() + 200;
   }
