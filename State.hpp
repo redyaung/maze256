@@ -10,6 +10,7 @@ enum class Difficulty {
 namespace State {
   extern Vision<3> normalVision;
   extern Vision<5> wideVision;
+
   extern float compassDegree;
   extern bool isGameOver;
   extern Difficulty difficulty;

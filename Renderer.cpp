@@ -1,14 +1,13 @@
 #include "Compass.hpp"
 #include "Renderer.hpp"
 #include "Vision.hpp"
+#include "Controls.hpp"
 #include "Macros.hpp"
 
 #ifdef ARDUINO
   #include <FastLED.h>
   #include <LEDControl.h>
 #endif
-
-extern CRGB leds[VISION_NUM_LEDS];
 
 static void setVisionPixel(int row, int col, CRGB color);
 
@@ -86,5 +85,5 @@ static void setVisionPixel(int row, int col, CRGB color) {
   int colBegin = col * VISION_HEIGHT;
   int offset = col % 2 == 0 ? row : VISION_HEIGHT - row - 1;
   int index = colBegin + offset;
-  leds[index] = color;
+  Controls::leds[index] = color;
 }
