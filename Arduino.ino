@@ -14,7 +14,6 @@
 CRGB leds[VISION_NUM_LEDS];
 LedControl compassDisplay(COMPASS_DIN, COMPASS_CLK, COMPASS_CS, 1);
 Renderer renderer(compassDisplay);
-State &state = State::getInstance();
 Joystick joystick(JOYSTICK_VRX, JOYSTICK_VRY, JOYSTICK_SW);
 
 // Function Declarations
@@ -44,8 +43,8 @@ void loop() {
 
   static unsigned long renderTimeout = 0;
   if (millis() > renderTimeout) {
-    renderer.renderWideVision(state.wideVision);
-    renderer.renderCompass(state.compassDegree);
+    renderer.renderWideVision(State::wideVision);
+    renderer.renderCompass(State::compassDegree);
     FastLED.show();
     renderTimeout = millis() + 200;
   }

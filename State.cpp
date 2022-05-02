@@ -1,7 +1,9 @@
 #include "State.hpp"
 
-State State::instance;
-
-State& State::getInstance() {
-  return instance;
-}
+namespace State {
+  Vision<3> normalVision;
+  Vision<5> wideVision;
+  float compassDegree = 0.0;
+  bool isGameOver = false;
+  Difficulty difficulty = Difficulty::Normal;
+};
