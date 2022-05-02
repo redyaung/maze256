@@ -24,9 +24,9 @@ void setup() {
   Serial.begin(115200);
 
   FastLED.addLeds<NEOPIXEL, VISION_DATA_PIN>(leds, VISION_NUM_LEDS);
-  FastLED.setBrightness(16);                            // [0, 255]
+  FastLED.setBrightness(8);                            // [0, 255]
   compassDisplay.shutdown(COMPASS_LED_INDEX, false);
-  compassDisplay.setIntensity(COMPASS_LED_INDEX, 8);    // [0, 15]
+  compassDisplay.setIntensity(COMPASS_LED_INDEX, 2);    // [0, 15]
   compassDisplay.clearDisplay(COMPASS_LED_INDEX);
 }
 

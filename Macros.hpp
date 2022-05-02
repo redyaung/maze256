@@ -13,8 +13,8 @@
 
 #ifndef ARDUINO
   #include <cassert>
-  #include <Arduino.h>
 #else
+  #include <Arduino.h>
   #include <assert.h>
 #endif
 
