@@ -5,13 +5,11 @@
 
 class NewGameScreen : public Screen {
 public:
+  NewGameScreen(bool rendered);
   Screen& loop() override;
 
-  static NewGameScreen& make();
-
 private:
-  static NewGameScreen instance;
-  NewGameScreen() = default;
+  bool rendered = false;
 };
 
 #endif

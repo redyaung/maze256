@@ -6,6 +6,11 @@
 class DifficultyScreen : public Screen {
 public:
   Screen& loop() override;
+
+  static DifficultyScreen& make();
+
+private:
+  static DifficultyScreen instance;
 };
 
 #endif

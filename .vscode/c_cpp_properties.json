@@ -33,6 +33,10 @@
                 "/Users/ronx/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/variants/mega",
                 "/Users/ronx/Documents/Arduino/libraries/LedControl/src",
                 "/Users/ronx/Documents/Arduino/libraries/FastLED/src",
+                "/Users/ronx/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/libraries/Wire/src",
+                "/Users/ronx/Documents/Arduino/libraries/LiquidCrystal_I2C-1.1.2",
+                "/Users/ronx/Documents/Arduino/libraries/Adafruit_PWM_Servo_Driver_Library",
+                "/Users/ronx/Applications/Arduino.app/Contents/Java/libraries/Servo/src",
                 "/Users/ronx/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include",
                 "/Users/ronx/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include-fixed",
                 "/Users/ronx/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include"

@@ -1,10 +1,12 @@
 #include "NewGameScreen.hpp"
 #include "Screen.hpp"
+#include "Controls.hpp"
 #include "Macros.hpp"
 
-NewGameScreen NewGameScreen::instance;
-
 static const unsigned long joystickButtonDebounce = 50;
+
+NewGameScreen::NewGameScreen(bool rendered)
+  : rendered(rendered) {}
 
 Screen& NewGameScreen::loop() {
   // Update internal state based on whether the user clicks the joystick
@@ -19,10 +21,14 @@ Screen& NewGameScreen::loop() {
     }
   }
   lastState = state;
+
   // Display the screen on the 16x2 display periodically
+  if (!rendered) {
+    Controls::textDisplay.setCursor(1, 0);
+    Controls::textDisplay.write("The Labyrinth");
+    Controls::textDisplay.setCursor(4, 1);
+    Controls::textDisplay.write("New Game");
+    rendered = true;
+  }
+  return *this;
 }
-
-NewGameScreen& NewGameScreen::make() {
-  return instance;
-}
-

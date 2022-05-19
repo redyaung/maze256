@@ -33,6 +33,7 @@ void Processor::processNormalVision(byte *content, int size) {
   for (int row = 0; row < 3; row++)
     for (int col = 0; col < 4; col++, index++)
       State::normalVision.verticals[row][col] = content[index];
+  State::visionChanged = true;
   __Debugln("Setting normal vision.");
 }
 

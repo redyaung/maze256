@@ -12,6 +12,65 @@
 namespace Renderer {
   static void setVisionPixel(int row, int col, CRGB color);
 
+  static const int horizontalWallMapping[4][3] = {
+    {18, 17, 16},
+    {5, 8, 3},
+    {6, 11, 4},
+    {22, 23, 24}
+  }, verticalWallMapping[3][4] = {
+    {19, 9, 7, 15},
+    {20, 1, 2, 14},
+    {21, 12, 10, 13}
+  };
+  static const int driverServoMin = 150;
+  static const int driverServoMax = 600;
+  static const int servoDelay = 5;
+
+  void renderWall(int wallIndex, bool state) {
+    state = !state;
+    if (wallIndex >= 2 && wallIndex <= 17) {
+      int pin = wallIndex >= 16 ? wallIndex - 16 : wallIndex;
+      if (wallIndex == 8 || wallIndex == 12 || wallIndex == 11)
+        state = !state;     // These turn counter clockwise
+      int from = state ? driverServoMin : driverServoMax;
+      int to = state ? driverServoMax : driverServoMin;
+      int increment = state ? 1 : -1;
+      for (int pulseWidth = from; pulseWidth != to; pulseWidth += increment) {
+        Controls::driver.setPWM(pin, 0, pulseWidth);
+        delay(servoDelay);
+      }
+    } else {
+      int pin = wallIndex == 1 ? 3 : wallIndex - 14;
+      int remnantIndex = pin - 3;
+      int from = state ? 0 : 180;
+      int to = state ? 180 : 0;
+      int increment = state ? 1 : -1;
+      for (int degree = from; degree != to; degree += increment) {
+        Controls::remnants[remnantIndex].write(degree);
+        delay(servoDelay);
+      }
+    }
+  }
+
+  void renderNormalVision(Vision<3> vision) {
+    static Vision<3> previous;
+    for (int row = 0; row < vision.range() + 1; row++) {
+      for (int col = 0; col < vision.range(); col++) {
+        bool state = vision.horizontals[row][col];
+        if (previous.horizontals[row][col] != vision.horizontals[row][col])
+          renderWall(horizontalWallMapping[row][col], state);
+      }
+    }
+    for (int row = 0; row < vision.range(); row++) {
+      for (int col = 0; col < vision.range() + 1; col++) {
+        bool state = vision.verticals[row][col];
+        if (previous.verticals[row][col] != vision.verticals[row][col])
+          renderWall(verticalWallMapping[row][col], state);
+      }
+    }
+    previous = vision;
+  }
+
   void renderWideVision(Vision<5> vision) {
     static Vision<5> previous;
     static bool isInitialRender = true;
